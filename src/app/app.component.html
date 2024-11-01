@@ -28,19 +28,91 @@
 </mat-toolbar>
 
 <div>
-  <div class="container mt-3">
-    <div *ngIf="items !== null" class="row">
-      <div *ngFor="let item of items" class="col-3 mb-3">
-        <mat-card class="example-card" appearance="outlined">
+  <div style="min-height: 80vh" class="container mt-3">
+    <div *ngIf="city !== null" class="row">
+      <div class="col-4 mb-3">
+        <mat-card appearance="outlined" class="clickable-card" (click)="onCardClick()">
           <mat-card-header>
-            <mat-card-title>Shiba Inu</mat-card-title>
+            <mat-card-title>
+              <span class="mx-3">{{ city.name }}</span>
+              {{ city.main.temp}}°C
+              <img class="mb-1" [height]="40" [width]="40" [ngSrc]="city.weather[0].iconUrl" alt="Weather icon" />
+            </mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <p>
-              The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-              A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-              bred for hunting.
-            </p>
+            <mat-divider class="my-2"></mat-divider>
+            <div class="row mb-2">
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">wb_sunny</mat-icon>
+                    <span>{{ city.sys.sunriseConverted }}</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">nights_stay</mat-icon>
+                    <span>{{ city.sys.sunsetConverted }}</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <mat-card class="card">
+                <mat-card-content class="card-content">
+                  <span>{{ city.main.pressure }} hPa</span>
+                </mat-card-content>
+              </mat-card>
+              </div>
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">opacity</mat-icon>
+                    <span>{{ city.main.humidity }} %</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">air</mat-icon>
+                    <span>{{ city.wind.speed }} km/h</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">visibility</mat-icon>
+                    <span>{{ city.visibility }} km</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <div class="row mb-2">
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">cloud</mat-icon>
+                    <span>{{ city.clouds.all }} %</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="col">
+                <mat-card class="card">
+                  <mat-card-content class="card-content">
+                    <mat-icon class="mx-1">thermostat</mat-icon>
+                    <span>{{ city.main.feels_like }} °C</span>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+
           </mat-card-content>
           <mat-card-actions>
             <button mat-button>LIKE</button>
@@ -48,6 +120,9 @@
           </mat-card-actions>
         </mat-card>
       </div>
+    </div>
+    <div *ngIf="city == null">
+      <mat-spinner></mat-spinner>
     </div>
   </div>
 </div>

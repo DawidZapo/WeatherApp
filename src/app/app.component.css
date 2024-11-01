@@ -1,0 +1,21 @@
+.clickable-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; /* Smooth transition for all effects */
+  cursor: pointer;
+}
+
+.clickable-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  /*background-color: rgba(161, 218, 248, 0.1);*/
+}
+.card-content {
+  display: flex;                   /* Use flexbox layout */
+  align-items: center;            /* Vertically center items */
+  justify-content: center;        /* Horizontally center items */
+  height: 100%;                   /* Make sure the content takes full height of the card */
+  padding: 0 8px;                 /* Optional: Add padding */
+}
+
+.card{
+  height: 35px;
+}
