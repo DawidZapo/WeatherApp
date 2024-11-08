@@ -5,6 +5,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {map, Observable, of} from 'rxjs';
 import {WeatherDTO} from '../common/weather';
 import {convertFromMStoKMH, formatUnixTimeToLocal} from '../utils/utils';
+import {WeatherForecastDTO} from '../common/weather-forecast';
 
 @Injectable({
   providedIn: 'root'
@@ -81,10 +82,12 @@ export class WeatherService {
 
   }
 
-  getForecastWeather(city: string): Observable<any>{
+  getForecastWeather(city: string): Observable<WeatherForecastDTO>{
     const params = this.applyParams(city);
 
-    return this.httpClient.get(this.forecastUrl, {params});
+    return this.httpClient.get<WeatherForecastDTO>(this.forecastUrl, {params}).pipe(
+      map(response => this.mapApiResponseToWeatherForecastDTO(response))
+    );
   }
 
   private applyParams(city: string) {
@@ -143,6 +146,68 @@ export class WeatherService {
       id: apiResponse.id,
       name: apiResponse.name,
       cod: apiResponse.cod,
+    };
+  }
+
+
+  private mapApiResponseToWeatherForecastDTO(apiResponse: any): WeatherForecastDTO {
+    return {
+      cod: apiResponse.cod,
+      message: apiResponse.message,
+      cnt: apiResponse.cnt,
+      list: apiResponse.list.map((item: any) => ({
+        dt: item.dt,
+        dtConverted: formatUnixTimeToLocal(item.dt, apiResponse.city.timezone),
+        main: {
+          temp: Math.round(item.main.temp),
+          feels_like: item.main.feels_like,
+          temp_min: item.main.temp_min,
+          temp_max: item.main.temp_max,
+          pressure: item.main.pressure,
+          sea_level: item.main.sea_level,
+          grnd_level: item.main.grnd_level,
+          humidity: item.main.humidity,
+          temp_kf: item.main.temp_kf,
+        },
+        weather: item.weather.map((w: any) => ({
+          id: w.id,
+          main: w.main,
+          description: w.description,
+          icon: w.icon,
+          iconUrl: this.getIconUrl(w.icon)
+        })),
+        clouds: {
+          all: item.clouds.all,
+        },
+        wind: {
+          speed: Math.round(convertFromMStoKMH(item.wind.speed)),
+          deg: item.wind.deg,
+          gust: Math.round(convertFromMStoKMH(item.wind.gust)),
+        },
+        visibility: Math.round(item.visibility / 1000),
+        pop: item.pop,
+        rain: item.rain ? { "3h": item.rain["3h"] } : undefined,
+        snow: item.snow ? { "3h": item.snow["3h"] } : undefined,
+        sys: {
+          pod: item.sys.pod,
+        },
+        dt_txt: item.dt_txt,
+      })),
+      city: {
+        id: apiResponse.city.id,
+        name: apiResponse.city.name,
+        coord: {
+          lat: apiResponse.city.coord.lat,
+          lon: apiResponse.city.coord.lon,
+        },
+        country: apiResponse.city.country,
+        population: apiResponse.city.population,
+        timezone: apiResponse.city.timezone,
+        sunrise: apiResponse.city.sunrise,
+        sunset: apiResponse.city.sunset,
+        sunriseConverted: formatUnixTimeToLocal(apiResponse.city.sunrise, apiResponse.city.timezone),
+        sunsetConverted: formatUnixTimeToLocal(apiResponse.city.sunset, apiResponse.city.timezone),
+      }
     };
   }
 

@@ -13,6 +13,8 @@ import {WeatherDTO} from './common/weather';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatDivider} from '@angular/material/divider';
 import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material/sidenav';
+import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {ForecastBottomSheetComponent} from './components/forecast-bottom-sheet/forecast-bottom-sheet.component';
 
 @Component({
   selector: 'app-root',
@@ -25,19 +27,29 @@ export class AppComponent implements OnInit{
 
   selectedCity: string = 'Gliwice';
   items: number[] = [1,2,4,2,2,2];
-  city: WeatherDTO | null = null;
+  cityWeather: WeatherDTO | null = null;
 
-  constructor(private weatherService: WeatherService) {
+  constructor(
+    private weatherService: WeatherService,
+    private bottomSheet: MatBottomSheet) {
   }
 
   ngOnInit(): void {
     this.weatherService.getCurrentWeather(this.selectedCity).subscribe((data) => {
-      this.city = data;
-      console.log(this.city);
+      this.cityWeather = data;
+      // console.log(this.cityWeather);
+    })
+
+    this.weatherService.getForecastWeather(this.selectedCity).subscribe(data => {
+      console.log(data);
     })
   }
 
   onCardClick(){
+    this.bottomSheet.open(ForecastBottomSheetComponent, {panelClass: 'full-screen-bottom-sheet'});
+  }
 
+  openForecastBottomSheet(){
+    this.bottomSheet.open(ForecastBottomSheetComponent);
   }
 }
