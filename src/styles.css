@@ -2,10 +2,10 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .full-screen-bottom-sheet .mat-bottom-sheet-container {
-  height: 80vh;
+  height: 95vh;
   width: 80vw;
   max-width: 80vw;
-  max-height: 80vh;
+  max-height: 95vh;
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
 }

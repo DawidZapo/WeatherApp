@@ -15,6 +15,9 @@ import {MatDivider} from '@angular/material/divider';
 import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material/sidenav';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ForecastBottomSheetComponent} from './components/forecast-bottom-sheet/forecast-bottom-sheet.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {WeatherForecastDTO} from './common/weather-forecast';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -31,18 +34,25 @@ export class AppComponent implements OnInit{
 
   constructor(
     private weatherService: WeatherService,
-    private bottomSheet: MatBottomSheet) {
+    private bottomSheet: MatBottomSheet,
+    private snackBar: MatSnackBar) {
   }
 
   ngOnInit(): void {
-    this.weatherService.getCurrentWeather(this.selectedCity).subscribe((data) => {
-      this.cityWeather = data;
-      // console.log(this.cityWeather);
-    })
+    this.weatherService.getCurrentWeather(this.selectedCity).subscribe({
+      next: (data) => {
+        this.cityWeather = data;
+      },
+      error: (error) => {
+        if(error.status === 404){
+          this.snackBar.open(`Nie znaleziono miasta`, `Zamknij`, {duration: 3000});
+        }
+        else{
+          this.snackBar.open('Oops... mamy problem pobrać dane', 'Zamknij', {duration: 3000});
+        }
+    }
+    });
 
-    this.weatherService.getForecastWeather(this.selectedCity).subscribe(data => {
-      console.log(data);
-    })
   }
 
   onCardClick(){

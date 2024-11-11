@@ -1,5 +1,34 @@
 <div class="bottom-sheet-content">
-  <h2>Bottom Sheet Title</h2>
-  <p>This is the content of the bottom sheet.</p>
-  <button mat-button (click)="close()">Close</button>
+  <mat-horizontal-stepper [selectedIndex]="currentStep" (selectionChange)="setStep($event.selectedIndex)">
+    <mat-step label="Every 3 hour forecast">
+      <div>
+        <canvas baseChart
+                [data]="everyThreeHourChart"
+                [options]="chartOptions"
+                [legend]="chartLegend"
+        >
+        </canvas>
+      </div>
+    </mat-step>
+
+    <mat-step label="Daily forecast">
+      <div>
+        <canvas baseChart
+                [data]="dailyChart"
+                [options]="chartOptions"
+                [legend]="chartLegend"
+        >
+        </canvas>
+      </div>
+    </mat-step>
+
+    <mat-step label="Rain/Snow">
+      <canvas baseChart
+              [data]="snowChartData"
+              [options]="chartOptions"
+              [legend]="chartLegend"
+      >
+      </canvas>
+    </mat-step>
+  </mat-horizontal-stepper>
 </div>
