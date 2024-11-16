@@ -9,11 +9,11 @@
   /*background-color: rgba(161, 218, 248, 0.1);*/
 }
 .card-content {
-  display: flex;                   /* Use flexbox layout */
-  align-items: center;            /* Vertically center items */
-  justify-content: center;        /* Horizontally center items */
-  height: 100%;                   /* Make sure the content takes full height of the card */
-  padding: 0 8px;                 /* Optional: Add padding */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0 8px;
 }
 
 .card{

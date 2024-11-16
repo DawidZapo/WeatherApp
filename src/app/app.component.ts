@@ -8,7 +8,6 @@ import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle} fr
 import {MatInput} from '@angular/material/input';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {WeatherService} from './service/weather.service';
-import {HttpClientModule} from '@angular/common/http';
 import {WeatherDTO} from './common/weather';
 import {MatProgressSpinner} from '@angular/material/progress-spinner';
 import {MatDivider} from '@angular/material/divider';
@@ -16,8 +15,6 @@ import {MatDrawer, MatDrawerContainer, MatDrawerContent} from '@angular/material
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {ForecastBottomSheetComponent} from './components/forecast-bottom-sheet/forecast-bottom-sheet.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {WeatherForecastDTO} from './common/weather-forecast';
-import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -28,9 +25,12 @@ import {ToastrService} from 'ngx-toastr';
 })
 export class AppComponent implements OnInit{
 
-  selectedCity: string = 'Gliwice';
-  items: number[] = [1,2,4,2,2,2];
-  cityWeather: WeatherDTO | null = null;
+  // selectedCity: string = 'Gliwice';
+  // items: number[] = [1,2,4,2,2,2];
+  // selectedCities: string[] = [];
+  title: string = 'Weather App';
+  citiesWeather: Map<string,WeatherDTO> = new Map<string, WeatherDTO>();
+  citiesWeatherValues: WeatherDTO[] = [];
 
   constructor(
     private weatherService: WeatherService,
@@ -39,27 +39,88 @@ export class AppComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.weatherService.getCurrentWeather(this.selectedCity).subscribe({
+    this.getSelectedCitiesFromLocalStorage().forEach(city => {
+      this.applyCityWeather(city);
+    });
+
+  }
+
+  private applyCityWeather(city: string, newCity?: boolean){
+    this.weatherService.getCurrentWeather(city).subscribe({
       next: (data) => {
-        this.cityWeather = data;
+        this.citiesWeather.set(city.toUpperCase(),data);
+        if(!this.getSelectedCitiesFromLocalStorage().includes(city)){
+          this.applyCityToLocalStorage(city);
+        }
       },
       error: (error) => {
         if(error.status === 404){
-          this.snackBar.open(`Nie znaleziono miasta`, `Zamknij`, {duration: 3000});
+          this.snackBar.open(`Nie znaleziono miasta ${city}`, `Zamknij`, {duration: 3000});
         }
         else{
           this.snackBar.open('Oops... mamy problem pobrać dane', 'Zamknij', {duration: 3000});
         }
-    }
+      }
     });
+  }
 
+  private applyCityToLocalStorage(city: string){
+    let cities = localStorage.getItem('cities');
+    if(cities){
+      localStorage.setItem('cities', cities + city.toUpperCase() + ',');
+    }
+    else{
+      localStorage.setItem('cities', city.toUpperCase() + ',');
+    }
+  }
+
+  private deleteCityFromLocalStorage(city: string): void {
+    const cities = localStorage.getItem('cities');
+
+    if (cities) {
+      const updatedCities = cities
+        .split(',')
+        .filter(storedCity => storedCity.trim().toUpperCase() !== city.toUpperCase()) // Remove the matching city
+        .join(',');
+      localStorage.setItem('cities', updatedCities);
+    }
+  }
+
+
+  private getSelectedCitiesFromLocalStorage(): string[] {
+    const cities = localStorage.getItem('cities');
+    if (cities) {
+      return cities
+        .split(',')
+        .filter(city => city.trim() !== '')
+        .map(city => city.trim().toUpperCase());
+    } else {
+      return [];
+    }
   }
 
   onCardClick(){
     this.bottomSheet.open(ForecastBottomSheetComponent, {panelClass: 'full-screen-bottom-sheet'});
   }
 
+  onSearchClick(searchInput: HTMLInputElement){
+    const searchValue = searchInput.value;
+    this.applyCityWeather(searchValue.toUpperCase());
+    searchInput.value = '';
+  }
+
+  onDeleteClick(city: string, event: Event){
+    event.stopPropagation();
+    this.deleteCityFromLocalStorage(city.toUpperCase());
+    this.citiesWeather.delete(city.toUpperCase());
+  }
+
   openForecastBottomSheet(){
     this.bottomSheet.open(ForecastBottomSheetComponent);
   }
+
+  getCitiesWeatherArray() {
+    return (this.citiesWeatherValues = Array.from(this.citiesWeather.values()));
+  }
+
 }
