@@ -48,9 +48,9 @@ export class AppComponent implements OnInit{
   private applyCityWeather(city: string, newCity?: boolean){
     this.weatherService.getCurrentWeather(city).subscribe({
       next: (data) => {
-        this.citiesWeather.set(city.toUpperCase(),data);
-        if(!this.getSelectedCitiesFromLocalStorage().includes(city)){
-          this.applyCityToLocalStorage(city);
+        this.citiesWeather.set(data.name.toUpperCase(),data);
+        if(!this.getSelectedCitiesFromLocalStorage().includes(data.name)){
+          this.applyCityToLocalStorage(data.name);
         }
       },
       error: (error) => {
