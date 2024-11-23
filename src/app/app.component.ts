@@ -48,10 +48,11 @@ export class AppComponent implements OnInit{
   private applyCityWeather(city: string, newCity?: boolean){
     this.weatherService.getCurrentWeather(city).subscribe({
       next: (data) => {
-        this.citiesWeather.set(data.name.toUpperCase(),data);
-        if(!this.getSelectedCitiesFromLocalStorage().includes(data.name)){
-          this.applyCityToLocalStorage(data.name);
+        this.citiesWeather.set(city.toUpperCase(),data);
+        if(!this.getSelectedCitiesFromLocalStorage().includes(city)){
+          this.applyCityToLocalStorage(city);
         }
+        console.log(this.getSelectedCitiesFromLocalStorage());
       },
       error: (error) => {
         if(error.status === 404){
@@ -104,9 +105,12 @@ export class AppComponent implements OnInit{
   }
 
   onSearchClick(searchInput: HTMLInputElement){
-    const searchValue = searchInput.value;
-    this.applyCityWeather(searchValue.toUpperCase());
-    searchInput.value = '';
+    const searchValue = searchInput.value.toUpperCase().trim();
+    console.log(this.getSelectedCitiesFromLocalStorage());
+    if(!this.citiesWeather.get(searchValue)){
+      this.applyCityWeather(searchValue.toUpperCase());
+      searchInput.value = '';
+    }
   }
 
   onDeleteClick(city: string, event: Event){

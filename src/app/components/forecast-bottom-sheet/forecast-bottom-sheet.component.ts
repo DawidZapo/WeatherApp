@@ -22,6 +22,7 @@ import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} f
 import {MatIcon} from '@angular/material/icon';
 import {NgIf} from '@angular/common';
 import {MatActionList} from '@angular/material/list';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
 Chart.register(CategoryScale, LinearScale, BarController, BarElement, PointElement, LineElement, Title, Tooltip, Legend);
 
 
@@ -29,7 +30,7 @@ Chart.register(CategoryScale, LinearScale, BarController, BarElement, PointEleme
   selector: 'app-forecast-bottom-sheet',
   standalone: true,
   imports: [
-    MatButton, BaseChartDirective, MatStepper, MatStep, MatStepperNext, MatStepperPrevious, MatIcon, NgIf, MatActionList, MatStepLabel
+    MatButton, BaseChartDirective, MatStepper, MatStep, MatStepperNext, MatStepperPrevious, MatIcon, NgIf, MatActionList, MatStepLabel, MatProgressSpinner
   ],
   templateUrl: './forecast-bottom-sheet.component.html',
   styleUrl: './forecast-bottom-sheet.component.css'

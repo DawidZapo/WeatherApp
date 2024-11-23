@@ -1,7 +1,7 @@
 <div class="bottom-sheet-content">
   <mat-horizontal-stepper [selectedIndex]="currentStep" (selectionChange)="setStep($event.selectedIndex)">
     <mat-step label="Every 3 hour forecast">
-      <div>
+      <div *ngIf="everyThreeHourChart.datasets[0].data.length != 0">
         <canvas baseChart
                 [data]="everyThreeHourChart"
                 [options]="chartOptions"
@@ -9,10 +9,13 @@
         >
         </canvas>
       </div>
+      <div *ngIf="everyThreeHourChart.datasets[0].data.length == 0">
+        <mat-spinner></mat-spinner>
+      </div>
     </mat-step>
 
     <mat-step label="Daily forecast">
-      <div>
+      <div *ngIf="dailyChart.datasets[0].data.length != 0">
         <canvas baseChart
                 [data]="dailyChart"
                 [options]="chartOptions"
@@ -20,15 +23,23 @@
         >
         </canvas>
       </div>
+      <div *ngIf="dailyChart.datasets[0].data.length == 0">
+        <mat-spinner></mat-spinner>
+      </div>
     </mat-step>
 
     <mat-step label="Rain/Snow">
-      <canvas baseChart
-              [data]="snowChartData"
-              [options]="chartOptions"
-              [legend]="chartLegend"
-      >
-      </canvas>
+      <div *ngIf="snowChartData.datasets[0].data.length != 0">
+        <canvas baseChart
+                [data]="snowChartData"
+                [options]="chartOptions"
+                [legend]="chartLegend"
+        >
+        </canvas>
+      </div>
+      <div *ngIf="snowChartData.datasets[0].data.length == 0">
+        <mat-spinner></mat-spinner>
+      </div>
     </mat-step>
   </mat-horizontal-stepper>
 </div>

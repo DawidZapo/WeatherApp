@@ -77,7 +77,7 @@ export class WeatherService {
     //   "name": "Gliwice",
     //   "cod": 200
     // }
-    //
+
     // return of(this.mapApiResponseToWeatherDTO(response));
 
   }
